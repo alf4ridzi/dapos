@@ -1,6 +1,6 @@
 import React from "react";
-import Sidebar from "../components/Sidebar";
-import Topbar from "../components/Topbar";
+import Sidebar from "@/Components/Sidebar";
+import Topbar from "@/Components/Topbar";
 
 export default function AuthenticatedLayout({ children, user }) {
     return (

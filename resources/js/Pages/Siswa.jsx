@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from "react";
-import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
-import CardStat from "../components/CardStat";
-import StudentsTable from "../components/StudentsTable";
-import StudentFormModal from "../components/StudentFormModal";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import CardStat from "@/Components/CardStat";
+import StudentsTable from "@/Components/StudentsTable";
+import StudentFormModal from "@/Components/StudentFormModal";
 import { exportToCSV } from "../utils/csv";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
