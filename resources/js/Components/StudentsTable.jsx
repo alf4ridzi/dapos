@@ -64,12 +64,12 @@ export default function StudentsTable({
 
     const getStatusColor = (status) => {
         const colors = {
-            aktif: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-            terdaftar:
+            Aktif: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+            Terdaftar:
                 "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
             pindah: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
-            lulus: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-            drop_out:
+            Lulus: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
+            Keluar:
                 "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
         };
         return (
@@ -177,7 +177,6 @@ export default function StudentsTable({
 
     return (
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
-            {/* Desktop Table */}
             <div className="hidden lg:block overflow-x-auto">
                 <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-600">
@@ -289,9 +288,9 @@ export default function StudentsTable({
                                 </td>
                                 <td className="py-4 px-4">
                                     <span
-                                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(student.status)}`}
+                                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(student.status.name)}`}
                                     >
-                                        {student.status}
+                                        {student.status.name}
                                     </span>
                                 </td>
                                 <td className="py-4 px-4">
@@ -454,9 +453,9 @@ export default function StudentsTable({
                                     Status
                                 </div>
                                 <span
-                                    className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium capitalize ${getStatusColor(student.status)}`}
+                                    className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium capitalize ${getStatusColor(student.status.name)}`}
                                 >
-                                    {student.status}
+                                    {student.status.name}
                                 </span>
                             </div>
                         </div>

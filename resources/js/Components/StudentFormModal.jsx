@@ -20,6 +20,7 @@ export default function StudentFormModal({
     onSubmit,
     initial = {},
     isLoading = false,
+    statuses = []
 }) {
     const isEdit = !!initial.id;
 
@@ -31,7 +32,7 @@ export default function StudentFormModal({
         nik: initial.nik || "",
         nisn: initial.nisn || "",
         grade: initial.grade || "",
-        status: initial.status || "terdaftar",
+        status_id: initial.status || 1,
         file: null,
     });
 
@@ -78,15 +79,12 @@ export default function StudentFormModal({
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-            {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
                 onClick={handleClose}
             ></div>
 
-            {/* Modal */}
             <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden z-10 transform transition-all duration-300 scale-95 hover:scale-100">
-                {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
@@ -119,13 +117,11 @@ export default function StudentFormModal({
                     </button>
                 </div>
 
-                {/* Form */}
                 <form
                     onSubmit={submit}
                     className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]"
                 >
                     <div className="space-y-6">
-                        {/* Informasi Pribadi */}
                         <div>
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                                 <FontAwesomeIcon
@@ -294,21 +290,17 @@ export default function StudentFormModal({
                                         }
                                         className="input w-full"
                                     >
-                                        <option value="terdaftar">
-                                            Terdaftar
-                                        </option>
-                                        <option value="aktif">Aktif</option>
-                                        <option value="lulus">Lulus</option>
-                                        <option value="pindah">Pindah</option>
-                                        <option value="drop_out">
-                                            Drop Out
-                                        </option>
+                                        {statuses.map((s) => (
+                                            <option key={s.id} value={s.id}>
+                                                {s.name}
+                                            </option>
+                                        ))}
+
                                     </select>
                                 </div>
                             </div>
                         </div>
 
-                        {/* File Upload */}
                         <div>
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                                 <FontAwesomeIcon

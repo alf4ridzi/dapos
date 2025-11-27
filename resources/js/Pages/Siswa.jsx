@@ -3,7 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import CardStat from "@/Components/CardStat";
 import StudentsTable from "@/Components/StudentsTable";
 import StudentFormModal from "@/Components/StudentFormModal";
-import { exportToCSV } from "@/utils/csv";
+import { exportToCSV, prepareCSVData } from "@/utils/csv";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faPlus,
@@ -19,83 +19,7 @@ import {
 import { Input } from "@/Components/ui/input";
 import { Head, usePage } from "@inertiajs/react";
 
-const DUMMY = [
-    {
-        id: 1,
-        name: "Andi Saputra",
-        gender: "L",
-        birth_date: "2010-05-02",
-        biological_mother: "Siti",
-        nik: "3201012001000001",
-        nisn: "10000001",
-        grade: "5A",
-        status: "aktif",
-        created_at: "2024-01-15",
-    },
-    {
-        id: 2,
-        name: "Lisa Permata",
-        gender: "P",
-        birth_date: "2011-07-11",
-        biological_mother: "Rina",
-        nik: "3201012001000002",
-        nisn: "10000002",
-        grade: "4B",
-        status: "terdaftar",
-        created_at: "2024-01-10",
-    },
-    {
-        id: 3,
-        name: "Budi Santoso",
-        gender: "L",
-        birth_date: "2010-11-20",
-        biological_mother: "Dewi",
-        nik: "3201012001000003",
-        nisn: "10000003",
-        grade: "6A",
-        status: "aktif",
-        created_at: "2024-01-05",
-    },
-    {
-        id: 4,
-        name: "Sari Indah",
-        gender: "P",
-        birth_date: "2011-03-15",
-        biological_mother: "Maya",
-        nik: "3201012001000004",
-        nisn: "10000004",
-        grade: "5B",
-        status: "pindah",
-        created_at: "2023-12-20",
-    },
-    {
-        id: 5,
-        name: "Sari Indah",
-        gender: "P",
-        birth_date: "2011-03-15",
-        biological_mother: "Maya",
-        nik: "3201012001000004",
-        nisn: "10000004",
-        grade: "5B",
-        status: "pindah",
-        created_at: "2023-12-20",
-    },
-    {
-        id: 6,
-        name: "Sari Indah",
-        gender: "P",
-        birth_date: "2011-03-15",
-        biological_mother: "Maya",
-        nik: "3201012001000004",
-        nisn: "10000004",
-        grade: "5B",
-        status: "pindah",
-        created_at: "2023-12-20",
-    },
-];
-
 export default function Siswa() {
-    const [students, setStudents] = useState(DUMMY);
     const [showModal, setShowModal] = useState(false);
     const [editing, setEditing] = useState(null);
     const [query, setQuery] = useState("");
@@ -105,16 +29,27 @@ export default function Siswa() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
 
-    const { auth } = usePage().props;
+    const { auth, students, status } = usePage().props;
+
+    console.log(students);
+
+    const exportColumns = {
+        name: "Nama",
+        gender: "Gender",
+        birth_date: "Tanggal Lahir",
+        biological_mother: "Nama Ibu",
+        nik: "NIK",
+        nisn: "NISN",
+        grade: "Kelas",
+        status: "Status",
+    };
 
     const stats = useMemo(() => {
         return {
             total: students.length,
             laki: students.filter((s) => s.gender === "L").length,
             perempuan: students.filter((s) => s.gender === "P").length,
-            aktif: students.filter((s) => s.status === "aktif").length,
-            terdaftar: students.filter((s) => s.status === "terdaftar").length,
-            pindah: students.filter((s) => s.status === "pindah").length,
+            aktif: students.filter((s) => s.status.name === "Aktif").length,
         };
     }, [students]);
 
@@ -122,12 +57,11 @@ export default function Siswa() {
         let result = students.filter(
             (s) =>
                 s.name.toLowerCase().includes(query.toLowerCase()) ||
-                s.nisn.toLowerCase().includes(query.toLowerCase()) ||
                 s.grade.toLowerCase().includes(query.toLowerCase()),
         );
 
         if (statusFilter !== "semua") {
-            result = result.filter((s) => s.status === statusFilter);
+            result = result.filter((s) => s.status.name === statusFilter);
         }
 
         if (gradeFilter !== "semua") {
@@ -146,12 +80,12 @@ export default function Siswa() {
                     prev.map((p) =>
                         p.id === editing.id
                             ? {
-                                  ...editing,
-                                  ...payload,
-                                  updated_at: new Date()
-                                      .toISOString()
-                                      .split("T")[0],
-                              }
+                                ...editing,
+                                ...payload,
+                                updated_at: new Date()
+                                    .toISOString()
+                                    .split("T")[0],
+                            }
                             : p,
                     ),
                 );
@@ -192,11 +126,27 @@ export default function Siswa() {
 
     function handleExport() {
         setIsLoading(true);
+
         setTimeout(() => {
+            const exportColumns = {
+                name: "Nama",
+                gender: "Gender",
+                birth_date: "Tanggal Lahir",
+                biological_mother: "Nama Ibu",
+                nik: "NIK",
+                nisn: "NISN",
+                grade: "Kelas",
+                status: "Status",
+            };
+
+            const { headers, cleaned } = prepareCSVData(students, exportColumns);
+
             exportToCSV(
-                students,
+                cleaned,
                 `siswa_export_${new Date().toISOString().split("T")[0]}.csv`,
+                headers
             );
+
             setIsLoading(false);
         }, 500);
     }
@@ -209,7 +159,14 @@ export default function Siswa() {
     }
 
     const uniqueGrades = [...new Set(students.map((s) => s.grade))];
-    const uniqueStatuses = [...new Set(students.map((s) => s.status))];
+    const uniqueStatuses = Object.values(
+        students.reduce((acc, s) => {
+            acc[s.status.id] = s.status;
+            return acc;
+        }, {})
+    );
+
+
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -316,16 +273,14 @@ export default function Siswa() {
 
                             <select
                                 value={statusFilter}
-                                onChange={(e) =>
-                                    setStatusFilter(e.target.value)
-                                }
+                                onChange={(e) => setStatusFilter(e.target.value)}
                                 className="input dark:bg-gray-700"
                             >
                                 <option value="semua">Semua Status</option>
+
                                 {uniqueStatuses.map((status) => (
-                                    <option key={status} value={status}>
-                                        {status.charAt(0).toUpperCase() +
-                                            status.slice(1)}
+                                    <option key={status.id} value={status.name}>
+                                        {status.name}
                                     </option>
                                 ))}
                             </select>
@@ -378,6 +333,7 @@ export default function Siswa() {
                 initial={editing || {}}
                 onSubmit={handleAdd}
                 isLoading={isLoading}
+                statuses={status}
             />
         </AuthenticatedLayout>
     );

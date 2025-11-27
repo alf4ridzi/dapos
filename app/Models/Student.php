@@ -7,4 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
     //
+
+    public function status() {
+        return $this->belongsTo(Status::class, "status_id");
+    }
 }

@@ -1,14 +1,35 @@
-export function exportToCSV(rows, filename = "export.csv") {
+export function exportToCSV(rows, filename = "export.csv", customHeaders = null) {
     if (!rows || !rows.length) return;
-    const headers = Object.keys(rows[0]);
+
+    const headers = customHeaders ?? Object.keys(rows[0]);
+
     const csv = [
         headers.join(","),
-        ...rows.map((r) =>
-            headers
-                .map((h) => `"${(r[h] ?? "").toString().replace(/"/g, '""')}"`)
-                .join(","),
-        ),
+
+        ...rows.map((row) =>
+            Object.keys(row)
+                .map((key) => {
+                    let value = row[key] ?? "";
+
+                    if (typeof value === "number") {
+                        if (value.toString().length >= 10) {
+                            value = `="${value}"`; 
+                        }
+                    }
+
+                    // Jika string angka panjang
+                    if (typeof value === "string" && /^\d{10,}$/.test(value)) {
+                        value = `="${value}"`;
+                    }
+
+                    value = value.toString().replace(/"/g, '""');
+
+                    return `"${value}"`;
+                })
+                .join(",")
+        )
     ].join("\n");
+
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -16,4 +37,20 @@ export function exportToCSV(rows, filename = "export.csv") {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+}
+
+
+export function prepareCSVData(data, columns) {
+    const headers = Object.values(columns); 
+    const keys = Object.keys(columns);     
+
+    const cleaned = data.map((item) => {
+        const row = {};
+        keys.forEach((key) => {
+            row[key] = item[key] ?? "";
+        });
+        return row;
+    });
+
+    return { headers, cleaned };
 }
