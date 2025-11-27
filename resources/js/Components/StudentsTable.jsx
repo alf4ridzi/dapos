@@ -93,34 +93,28 @@ export default function StudentsTable({
         if (action === "view" && onView) onView(student);
     };
 
-    // Generate page numbers untuk pagination
     const getPageNumbers = () => {
         const pages = [];
         const maxVisiblePages = 5;
 
         if (totalPages <= maxVisiblePages) {
-            // Tampilkan semua page jika total pages sedikit
             for (let i = 1; i <= totalPages; i++) {
                 pages.push(i);
             }
         } else {
-            // Logic untuk menampilkan page numbers dengan ellipsis
             if (currentPage <= 3) {
-                // Dekat dengan awal
                 for (let i = 1; i <= 4; i++) {
                     pages.push(i);
                 }
                 pages.push("...");
                 pages.push(totalPages);
             } else if (currentPage >= totalPages - 2) {
-                // Dekat dengan akhir
                 pages.push(1);
                 pages.push("...");
                 for (let i = totalPages - 3; i <= totalPages; i++) {
                     pages.push(i);
                 }
             } else {
-                // Di tengah
                 pages.push(1);
                 pages.push("...");
                 for (let i = currentPage - 1; i <= currentPage + 1; i++) {

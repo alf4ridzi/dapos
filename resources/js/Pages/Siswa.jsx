@@ -3,7 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import CardStat from "@/Components/CardStat";
 import StudentsTable from "@/Components/StudentsTable";
 import StudentFormModal from "@/Components/StudentFormModal";
-import { exportToCSV } from "../utils/csv";
+import { exportToCSV } from "@/utils/csv";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faPlus,
@@ -17,6 +17,7 @@ import {
     faRefresh,
 } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "@/Components/ui/input";
+import { Head } from "@inertiajs/react";
 
 const DUMMY = [
     {
@@ -201,7 +202,6 @@ export default function Siswa() {
     function handleRefresh() {
         setIsLoading(true);
         setTimeout(() => {
-            // Simulate data refresh
             setIsLoading(false);
         }, 1000);
     }
@@ -211,6 +211,7 @@ export default function Siswa() {
 
     return (
         <AuthenticatedLayout>
+            <Head title="Siswa" />
             <div className="space-y-6">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                     <div>
