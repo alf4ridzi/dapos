@@ -14,7 +14,9 @@ import {
     faCalendarAlt,
     faChartLine,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "@inertiajs/inertia-react";
+import { Link } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
+import { Button } from "@headlessui/react";
 
 export default function Sidebar({ isMobileOpen, onMobileToggle }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -39,6 +41,11 @@ export default function Sidebar({ isMobileOpen, onMobileToggle }) {
             onMobileToggle();
         }
     };
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        router.post(route('logout'));
+    }
 
     return (
         <>
@@ -175,10 +182,8 @@ export default function Sidebar({ isMobileOpen, onMobileToggle }) {
                         </div>
                     </div>
 
-                    <Link
-                        href={route("logout")}
-                        method="post"
-                        as="button"
+                    <Button
+                        onClick={handleLogout}
                         className={`
                             w-full flex items-center rounded-xl p-3 text-gray-700 dark:text-gray-300
                             hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 group
@@ -203,7 +208,7 @@ export default function Sidebar({ isMobileOpen, onMobileToggle }) {
                                 Keluar
                             </div>
                         )}
-                    </Link>
+                    </Button>
                 </div>
             </aside>
         </>
