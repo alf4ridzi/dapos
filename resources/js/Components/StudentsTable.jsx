@@ -306,18 +306,6 @@ export default function StudentsTable({
                                             onClick={() =>
                                                 handleActionClick(
                                                     student,
-                                                    "view",
-                                                )
-                                            }
-                                            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
-                                            title="Lihat detail"
-                                        >
-                                            <FontAwesomeIcon icon={faEye} />
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                handleActionClick(
-                                                    student,
                                                     "edit",
                                                 )
                                             }
