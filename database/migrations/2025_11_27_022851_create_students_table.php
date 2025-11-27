@@ -16,8 +16,8 @@ return new class extends Migration {
             $table->char("gender");
             $table->date("birth_date");
             $table->string("biological_mother");
-            $table->bigInteger("nik");
-            $table->bigInteger("nisn");
+            $table->bigInteger("nik")->unique(true);
+            $table->bigInteger("nisn")->unique(true);
             $table->string("grade");
             $table
                 ->enum("status", ["lulus", "aktif", "terdaftar", "keluar"])
