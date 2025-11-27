@@ -17,7 +17,7 @@ import {
     faRefresh,
 } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "@/Components/ui/input";
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 
 const DUMMY = [
     {
@@ -104,6 +104,8 @@ export default function Siswa() {
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
+
+    const { auth } = usePage().props;
 
     const stats = useMemo(() => {
         return {
@@ -210,7 +212,7 @@ export default function Siswa() {
     const uniqueStatuses = [...new Set(students.map((s) => s.status))];
 
     return (
-        <AuthenticatedLayout>
+        <AuthenticatedLayout user={auth.user}>
             <Head title="Siswa" />
             <div className="space-y-6">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -258,7 +260,6 @@ export default function Siswa() {
                     </div>
                 </div>
 
-                {/* Statistics Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
                     <CardStat
                         title="Total Siswa"
@@ -368,7 +369,6 @@ export default function Siswa() {
                 </div>
             </div>
 
-            {/* Student Form Modal */}
             <StudentFormModal
                 show={showModal}
                 onClose={() => {

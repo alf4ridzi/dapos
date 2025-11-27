@@ -46,7 +46,7 @@ export default function Topbar({ user, onMenuToggle }) {
                         <span className="absolute -bottom-1 -right-1 w-2 h-2 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></span>
                     </div>
                     <span className="hidden sm:block font-medium text-sm lg:text-base text-gray-700 dark:text-gray-300">
-                        Alfaridzi
+                        {user?.name}
                     </span>
                     <FontAwesomeIcon
                         icon={faChevronDown}

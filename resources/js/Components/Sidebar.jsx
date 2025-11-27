@@ -15,7 +15,6 @@ import {
     faChartLine,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "@inertiajs/inertia-react";
-import { Button } from "./ui/button";
 
 export default function Sidebar({ isMobileOpen, onMobileToggle }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
