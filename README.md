@@ -36,3 +36,6 @@ php artisan key:generate
 php artisan migrate
 composer run dev
 ```
+
+## Licensi
+Proyek ini dirilis di bawah MIT License.
