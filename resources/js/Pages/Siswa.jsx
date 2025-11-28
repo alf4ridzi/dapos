@@ -40,8 +40,6 @@ export default function Siswa() {
 
     const [students, setStudents] = useState(serverStudents);
 
-    console.log(usePage().props);
-
     useEffect(() => {
         setStudents(serverStudents);
         if (flash.success) {

@@ -24,6 +24,8 @@ export default function StudentFormModal({
 }) {
     const isEdit = !!initial.id;
 
+    console.log(statuses);
+
     const { data, setData, post, reset, processing, put } = useForm({
         name: initial.name || "",
         gender: initial.gender || "L",
