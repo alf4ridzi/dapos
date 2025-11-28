@@ -1,6 +1,11 @@
-# System Manajement Data Pokok Siswa
+# System Management Data Pokok Siswa
 
-Sebuah sistem pengelola data pokok siswa yang diperuntukkan ujian akhir semester kelas 12
+Sebuah sistem pengelola data pokok siswa yang diperuntukkan ujian akhir semester kelas 12 
+
+## Stack
+- Laravel
+- React
+- Inertiajs
 
 ## Install
 Install project
