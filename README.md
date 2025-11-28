@@ -1,22 +1,39 @@
-# System Management Data Pokok Siswa
+# 🎓 System Management Data Pokok Siswa  
+Sistem manajemen **Data Pokok Siswa (DAPOS)** yang digunakan untuk kebutuhan pendataan dan pengelolaan siswa, khususnya untuk persiapan **Ujian Akhir Semester kelas 12**.  
+Dibangun dengan stack modern yang menggabungkan kekuatan Laravel, React, dan Inertia.js untuk menghasilkan aplikasi cepat, responsif, dan mudah digunakan.
 
-Sebuah sistem pengelola data pokok siswa yang diperuntukkan ujian akhir semester kelas 12 
+---
 
-## Stack
-- Laravel
-- React
-- Inertiajs
+## 🚀 Tech Stack
+- **Laravel** – Backend API & server-side logic  
+- **React** – Modern UI Framework  
+- **Inertia.js** – Penghubung Laravel & React tanpa REST API  
+- **TailwindCSS** – Utility-first CSS framework  
+- **MySQL** – Database
 
-## Install
-Install project
-```
+---
+
+## 📌 Fitur Utama
+- ➕ Tambah Siswa  
+- ✏️ Edit Siswa  
+- ❌ Hapus Siswa  
+- 📤 Export Data Siswa (Excel)  
+- 📥 Import Data Siswa (Excel)  
+- 🔍 Validasi Data Siswa  
+- 🌙 Dark Mode (opsional, jika diaktifkan)
+
+---
+
+## 🛠 Instalasi
+
+### 1️⃣ Clone Repository
+```bash
 git clone https://github.com/alf4ridzi/dapos
 cd dapos
 composer install
 npm install
-```
-
-Jalankan project
-```
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
 composer run dev
 ```
