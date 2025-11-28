@@ -29,6 +29,9 @@ Route::middleware(["auth", "verified"])->group(function () {
     Route::post("/siswa/import", [SiswaController::class, "import"])->name(
         "siswa.import",
     );
+    Route::put("/siswa/{id}", [SiswaController::class, "update"])->name(
+        "siswa.update",
+    );
 });
 
 Route::middleware("auth")->group(function () {

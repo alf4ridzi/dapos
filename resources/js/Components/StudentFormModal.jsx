@@ -24,7 +24,7 @@ export default function StudentFormModal({
 }) {
     const isEdit = !!initial.id;
 
-    const { data, setData, post, reset, processing } = useForm({
+    const { data, setData, post, reset, processing, put } = useForm({
         name: initial.name || "",
         gender: initial.gender || "L",
         birth_date: initial.birth_date || "",
@@ -63,23 +63,36 @@ export default function StudentFormModal({
         }
     }
 
-    function submit(e) {
-        e.preventDefault();
-
+    function handleAdd(e) {
         post(route("siswa.store"), {
             preserveScroll: true,
             preserveState: true,
-            forceFormData: true,
             onSuccess: () => {
                 onClose();
-                if (onSubmit) {
-                    onSubmit(data);
-                }
                 setFileName("");
                 reset();
             },
             onError: (errors) => {
                 console.log("Errors:", errors);
+            },
+        });
+    }
+
+    function submit(e) {
+        if (isEdit) {
+            handleEdit(e);
+        } else {
+            handleAdd(e);
+        }
+    }
+
+    function handleEdit(e) {
+        e.preventDefault();
+        put(route("siswa.update", initial.id), {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                onClose();
             },
         });
     }

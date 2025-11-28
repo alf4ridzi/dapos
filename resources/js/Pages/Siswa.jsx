@@ -17,7 +17,7 @@ import {
     faRefresh,
 } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "@/Components/ui/input";
-import { Head, usePage } from "@inertiajs/react";
+import { Head, usePage, router } from "@inertiajs/react";
 import { toast } from "react-toastify";
 
 export default function Siswa() {
@@ -168,6 +168,7 @@ export default function Siswa() {
     function handleRefresh() {
         setIsLoading(true);
         setTimeout(() => {
+            router.reload();
             setIsLoading(false);
         }, 1000);
     }
