@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import CardStat from "@/Components/CardStat";
 import StudentsTable from "@/Components/StudentsTable";
@@ -18,6 +18,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "@/Components/ui/input";
 import { Head, usePage } from "@inertiajs/react";
+import { toast } from "react-toastify";
 
 export default function Siswa() {
     const [showModal, setShowModal] = useState(false);
@@ -29,20 +30,34 @@ export default function Siswa() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
 
-    const { auth, students, status } = usePage().props;
+    const {
+        auth,
+        students: serverStudents,
+        status,
+        errors,
+        flash,
+    } = usePage().props;
 
-    console.log(students);
+    const [students, setStudents] = useState(serverStudents);
 
-    const exportColumns = {
-        name: "Nama",
-        gender: "Gender",
-        birth_date: "Tanggal Lahir",
-        biological_mother: "Nama Ibu",
-        nik: "NIK",
-        nisn: "NISN",
-        grade: "Kelas",
-        status: "Status",
-    };
+    console.log(usePage().props);
+
+    useEffect(() => {
+        setStudents(serverStudents);
+        if (flash.success) {
+            toast.success(flash.success);
+        }
+
+        if (flash.error) {
+            toast.error(flash.error);
+        }
+
+        if (errors) {
+            Object.keys(errors).forEach((key) => {
+                toast.error(errors[key]);
+            });
+        }
+    }, [errors, flash, serverStudents]);
 
     const stats = useMemo(() => {
         return {
@@ -80,12 +95,12 @@ export default function Siswa() {
                     prev.map((p) =>
                         p.id === editing.id
                             ? {
-                                ...editing,
-                                ...payload,
-                                updated_at: new Date()
-                                    .toISOString()
-                                    .split("T")[0],
-                            }
+                                  ...editing,
+                                  ...payload,
+                                  updated_at: new Date()
+                                      .toISOString()
+                                      .split("T")[0],
+                              }
                             : p,
                     ),
                 );
@@ -94,13 +109,9 @@ export default function Siswa() {
                 const newItem = {
                     ...payload,
                     id: Math.max(...students.map((s) => s.id)) + 1,
-                    nisn:
-                        payload.nisn ||
-                        Math.floor(
-                            10000000 + Math.random() * 90000000,
-                        ).toString(),
+                    nisn: payload.nisn,
                     created_at: new Date().toISOString().split("T")[0],
-                    status: payload.status || "terdaftar",
+                    status: status.find((s) => s.id == payload.status_id),
                 };
                 setStudents((prev) => [newItem, ...prev]);
             }
@@ -139,12 +150,15 @@ export default function Siswa() {
                 status: "Status",
             };
 
-            const { headers, cleaned } = prepareCSVData(students, exportColumns);
+            const { headers, cleaned } = prepareCSVData(
+                students,
+                exportColumns,
+            );
 
             exportToCSV(
                 cleaned,
                 `siswa_export_${new Date().toISOString().split("T")[0]}.csv`,
-                headers
+                headers,
             );
 
             setIsLoading(false);
@@ -163,10 +177,8 @@ export default function Siswa() {
         students.reduce((acc, s) => {
             acc[s.status.id] = s.status;
             return acc;
-        }, {})
+        }, {}),
     );
-
-
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -273,7 +285,9 @@ export default function Siswa() {
 
                             <select
                                 value={statusFilter}
-                                onChange={(e) => setStatusFilter(e.target.value)}
+                                onChange={(e) =>
+                                    setStatusFilter(e.target.value)
+                                }
                                 className="input dark:bg-gray-700"
                             >
                                 <option value="semua">Semua Status</option>

@@ -12,19 +12,21 @@ use Inertia\Inertia;
 class SiswaController extends Controller
 {
     //
-    public function index() {
-        $students = Student::with(['status'])->get();
+    public function index()
+    {
+        $students = Student::with(["status"])->get();
         $status = Status::all();
 
         $data = [
-            'students' => $students,
-            'status' => $status
+            "students" => $students,
+            "status" => $status,
         ];
 
         return Inertia::render("Siswa", $data);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $validated = $request->validate([
             "name" => "required|string",
             "gender" => "required|string|max:1",
@@ -33,7 +35,8 @@ class SiswaController extends Controller
             "nik" => "required|integer",
             "nisn" => "required|integer",
             "grade" => "required|string",
-            "status_id" => "required|integer"
+            "status_id" => "required|integer",
+            "file" => "nullable|file",
         ]);
 
         DB::beginTransaction();
@@ -41,10 +44,10 @@ class SiswaController extends Controller
         try {
             Student::create($validated);
             DB::commit();
-            return back()->with('success', 'berhasil menambah siswa');
+            return back()->with("success", "berhasil menambah siswa");
         } catch (Exception $e) {
             DB::rollBack();
-            return back()->with('error', $e->getMessage());
+            return back()->with("error", $e->getMessage());
         }
     }
 }

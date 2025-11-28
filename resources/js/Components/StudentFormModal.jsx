@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useForm } from "@inertiajs/inertia-react";
+import { useForm, Form } from "@inertiajs/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faTimes,
@@ -20,19 +20,19 @@ export default function StudentFormModal({
     onSubmit,
     initial = {},
     isLoading = false,
-    statuses = []
+    statuses = [],
 }) {
     const isEdit = !!initial.id;
 
-    const form = useForm({
+    const { data, setData, post, reset, processing } = useForm({
         name: initial.name || "",
         gender: initial.gender || "L",
         birth_date: initial.birth_date || "",
         biological_mother: initial.biological_mother || "",
-        nik: initial.nik || "",
-        nisn: initial.nisn || "",
+        nik: initial.nik || 0,
+        nisn: initial.nisn || 0,
         grade: initial.grade || "",
-        status_id: initial.status || 1,
+        status_id: initial.status_id || initial.status?.id || 1,
         file: null,
     });
 
@@ -40,7 +40,7 @@ export default function StudentFormModal({
 
     useEffect(() => {
         if (show) {
-            form.setData({
+            setData({
                 name: initial.name || "",
                 gender: initial.gender || "L",
                 birth_date: initial.birth_date || "",
@@ -48,7 +48,7 @@ export default function StudentFormModal({
                 nik: initial.nik || "",
                 nisn: initial.nisn || "",
                 grade: initial.grade || "",
-                status: initial.status || "terdaftar",
+                status_id: initial.status_id || initial.status?.id || 1,
                 file: null,
             });
             setFileName("");
@@ -58,19 +58,34 @@ export default function StudentFormModal({
     function handleFile(e) {
         const file = e.target.files[0];
         if (file) {
-            form.setData("file", file);
+            setData("file", file);
             setFileName(file.name);
         }
     }
 
     function submit(e) {
         e.preventDefault();
-        const payload = { ...form.data };
-        onSubmit(payload);
+
+        post(route("siswa.store"), {
+            preserveScroll: true,
+            preserveState: true,
+            forceFormData: true,
+            onSuccess: () => {
+                onClose();
+                if (onSubmit) {
+                    onSubmit(data);
+                }
+                setFileName("");
+                reset();
+            },
+            onError: (errors) => {
+                console.log("Errors:", errors);
+            },
+        });
     }
 
     function handleClose() {
-        form.reset();
+        reset();
         setFileName("");
         onClose();
     }
@@ -137,9 +152,9 @@ export default function StudentFormModal({
                                     </label>
                                     <input
                                         placeholder="Masukkan nama lengkap"
-                                        value={form.data.name}
+                                        value={data.name}
                                         onChange={(e) =>
-                                            form.setData("name", e.target.value)
+                                            setData("name", e.target.value)
                                         }
                                         className="input w-full"
                                         required
@@ -155,12 +170,9 @@ export default function StudentFormModal({
                                         Jenis Kelamin *
                                     </label>
                                     <select
-                                        value={form.data.gender}
+                                        value={data.gender}
                                         onChange={(e) =>
-                                            form.setData(
-                                                "gender",
-                                                e.target.value,
-                                            )
+                                            setData("gender", e.target.value)
                                         }
                                         className="input w-full"
                                     >
@@ -179,9 +191,9 @@ export default function StudentFormModal({
                                     </label>
                                     <input
                                         type="date"
-                                        value={form.data.birth_date}
+                                        value={data.birth_date}
                                         onChange={(e) =>
-                                            form.setData(
+                                            setData(
                                                 "birth_date",
                                                 e.target.value,
                                             )
@@ -197,9 +209,9 @@ export default function StudentFormModal({
                                     </label>
                                     <input
                                         placeholder="Masukkan nama ibu kandung"
-                                        value={form.data.biological_mother}
+                                        value={data.biological_mother}
                                         onChange={(e) =>
-                                            form.setData(
+                                            setData(
                                                 "biological_mother",
                                                 e.target.value,
                                             )
@@ -211,7 +223,6 @@ export default function StudentFormModal({
                             </div>
                         </div>
 
-                        {/* Informasi Akademik */}
                         <div>
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                                 <FontAwesomeIcon
@@ -231,11 +242,13 @@ export default function StudentFormModal({
                                     </label>
                                     <input
                                         placeholder="Masukkan NIK"
-                                        value={form.data.nik}
+                                        value={data.nik}
                                         onChange={(e) =>
-                                            form.setData("nik", e.target.value)
+                                            setData("nik", e.target.value)
                                         }
+                                        type="number"
                                         className="input w-full"
+                                        required
                                     />
                                 </div>
 
@@ -245,11 +258,12 @@ export default function StudentFormModal({
                                     </label>
                                     <input
                                         placeholder="Masukkan NISN"
-                                        value={form.data.nisn}
+                                        value={data.nisn}
                                         onChange={(e) =>
-                                            form.setData("nisn", e.target.value)
+                                            setData("nisn", e.target.value)
                                         }
                                         className="input w-full"
+                                        type="number"
                                         required
                                     />
                                 </div>
@@ -264,12 +278,9 @@ export default function StudentFormModal({
                                     </label>
                                     <input
                                         placeholder="Contoh: 10 IPA 1"
-                                        value={form.data.grade}
+                                        value={data.grade}
                                         onChange={(e) =>
-                                            form.setData(
-                                                "grade",
-                                                e.target.value,
-                                            )
+                                            setData("grade", e.target.value)
                                         }
                                         className="input w-full"
                                         required
@@ -281,12 +292,9 @@ export default function StudentFormModal({
                                         Status Siswa *
                                     </label>
                                     <select
-                                        value={form.data.status}
+                                        value={data.status_id}
                                         onChange={(e) =>
-                                            form.setData(
-                                                "status",
-                                                e.target.value,
-                                            )
+                                            setData("status_id", e.target.value)
                                         }
                                         className="input w-full"
                                     >
@@ -295,7 +303,6 @@ export default function StudentFormModal({
                                                 {s.name}
                                             </option>
                                         ))}
-
                                     </select>
                                 </div>
                             </div>
@@ -348,22 +355,21 @@ export default function StudentFormModal({
                         </div>
                     </div>
 
-                    {/* Actions */}
                     <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-gray-700 mt-6">
                         <button
                             type="button"
                             onClick={handleClose}
-                            disabled={isLoading}
+                            disabled={processing}
                             className="px-6 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 disabled:opacity-50"
                         >
                             Batal
                         </button>
                         <button
                             type="submit"
-                            disabled={isLoading}
+                            disabled={processing}
                             className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 disabled:opacity-50 flex items-center gap-2"
                         >
-                            {isLoading ? (
+                            {processing ? (
                                 <>
                                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                                     Menyimpan...
