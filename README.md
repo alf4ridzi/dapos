@@ -26,7 +26,6 @@ Dibangun dengan stack modern yang menggabungkan kekuatan Laravel, React, dan Ine
 
 ## 🛠 Instalasi
 
-### 1️⃣ Clone Repository
 ```bash
 git clone https://github.com/alf4ridzi/dapos
 cd dapos
