@@ -33,7 +33,7 @@ export default function Login() {
                 >
                     <div className="hidden lg:block w-1/2">
                         <img
-                            src="https://images.unsplash.com/photo-1601850494422-3cf14624b0b3?q=80&w=1170&auto=format&fit=crop"
+                            src="/storage/images/smkn2.jpg"
                             alt="Login Illustration"
                             className="h-full w-full object-cover"
                         />
@@ -43,7 +43,7 @@ export default function Login() {
                         <CardContent className="p-0">
                             <div className="flex justify-between items-center mb-6">
                                 <h2 className="text-3xl font-semibold text-gray-900 dark:text-white">
-                                    Login
+                                    Login Data Siswa
                                 </h2>
                                 <Button
                                     variant="ghost"
