@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\StudentImport;
 use App\Models\Status;
 use App\Models\Student;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SiswaController extends Controller
 {
@@ -36,7 +38,6 @@ class SiswaController extends Controller
             "nisn" => "required|integer",
             "grade" => "required|string",
             "status_id" => "required|integer",
-            "file" => "nullable|file",
         ]);
 
         DB::beginTransaction();
@@ -49,5 +50,16 @@ class SiswaController extends Controller
             DB::rollBack();
             return back()->with("error", $e->getMessage());
         }
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            "file" => "required|mimes:xlsx,csv,xls|max:2048",
+        ]);
+
+        Excel::import(new StudentImport(), $request->file);
+
+        return back()->with("success", "Berhasil mengimpor data!");
     }
 }
