@@ -37,5 +37,8 @@ php artisan migrate
 composer run dev
 ```
 
+## Gallery
+![Dashboard](docs/2025-11-28_18-01.png)
+
 ## Licensi
 Proyek ini dirilis di bawah MIT License.
