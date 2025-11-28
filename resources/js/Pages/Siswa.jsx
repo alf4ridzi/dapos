@@ -130,7 +130,7 @@ export default function Siswa() {
         setIsLoading(true);
 
         setTimeout(() => {
-            setStudents((prev) => prev.filter((p) => p.id !== s.id));
+            router.delete(route("siswa.destroy", s.id));
             setIsLoading(false);
         }, 300);
     }

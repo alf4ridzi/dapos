@@ -32,6 +32,9 @@ Route::middleware(["auth", "verified"])->group(function () {
     Route::put("/siswa/{id}", [SiswaController::class, "update"])->name(
         "siswa.update",
     );
+    Route::delete("/siswa/{id}", [SiswaController::class, "destroy"])->name(
+        "siswa.destroy",
+    );
 });
 
 Route::middleware("auth")->group(function () {

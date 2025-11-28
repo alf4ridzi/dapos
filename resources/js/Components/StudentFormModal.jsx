@@ -81,9 +81,24 @@ export default function StudentFormModal({
     function submit(e) {
         if (isEdit) {
             handleEdit(e);
+        } else if (fileName) {
+            handleImport(e);
         } else {
             handleAdd(e);
         }
+    }
+
+    function handleImport(e) {
+        e.preventDefault();
+        post(route("siswa.import"), {
+            forceFormData: true,
+            onSuccess: () => {
+                onClose();
+                setFileName("");
+                setData("file", null);
+                reset();
+            },
+        });
     }
 
     function handleEdit(e) {
@@ -321,51 +336,68 @@ export default function StudentFormModal({
                             </div>
                         </div>
 
-                        <div>
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                                <FontAwesomeIcon
-                                    icon={faUpload}
-                                    className="text-purple-500"
-                                />
-                                Upload Berkas
-                            </h3>
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    File Pendukung
-                                </label>
-                                <div className="flex items-center gap-4">
-                                    <label className="flex-1 cursor-pointer">
-                                        <input
-                                            type="file"
-                                            onChange={handleFile}
-                                            className="hidden"
-                                        />
-                                        <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center hover:border-blue-500 dark:hover:border-blue-400 transition-colors duration-200">
-                                            <FontAwesomeIcon
-                                                icon={faUpload}
-                                                className="text-gray-400 text-2xl mb-2"
-                                            />
-                                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                Klik untuk upload file atau drag
-                                                & drop
-                                            </p>
-                                            <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                                                PDF, JPG, PNG (max. 10MB)
-                                            </p>
-                                        </div>
+                        {!isEdit && (
+                            <div>
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                                    <FontAwesomeIcon
+                                        icon={faUpload}
+                                        className="text-purple-500"
+                                    />
+                                    Upload Import Data
+                                </h3>
+                                <div className="space-y-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        File Pendukung
                                     </label>
-                                    {fileName && (
-                                        <div className="flex-shrink-0">
-                                            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg px-3 py-2">
-                                                <p className="text-sm text-green-800 dark:text-green-300 font-medium">
-                                                    {fileName}
+                                    <div className="flex items-center gap-4">
+                                        <label className="flex-1 cursor-pointer">
+                                            <input
+                                                type="file"
+                                                onChange={handleFile}
+                                                className="hidden"
+                                            />
+                                            <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center hover:border-blue-500 dark:hover:border-blue-400 transition-colors duration-200">
+                                                <FontAwesomeIcon
+                                                    icon={faUpload}
+                                                    className="text-gray-400 text-2xl mb-2"
+                                                />
+                                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                    Klik untuk upload file atau
+                                                    drag & drop
+                                                </p>
+                                                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                                                    EXCEL FILE
                                                 </p>
                                             </div>
-                                        </div>
-                                    )}
+                                        </label>
+                                        {fileName && (
+                                            <div className="flex-shrink-0">
+                                                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg px-3 py-2">
+                                                    <p className="text-sm text-green-800 dark:text-green-300 font-medium">
+                                                        {fileName}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="mt-4">
+                                    <button
+                                        type="button"
+                                        onClick={handleImport}
+                                        disabled={!fileName}
+                                        className={`px-4 py-2 rounded-lg text-white font-semibold transition
+                                                    ${
+                                                        fileName
+                                                            ? "bg-blue-600 hover:bg-blue-700"
+                                                            : "bg-gray-400 cursor-not-allowed"
+                                                    }`}
+                                    >
+                                        Import Data
+                                    </button>
                                 </div>
                             </div>
-                        </div>
+                        )}
                     </div>
 
                     <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-gray-700 mt-6">

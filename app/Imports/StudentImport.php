@@ -2,39 +2,59 @@
 
 namespace App\Imports;
 
-use App\Models\Status;
 use App\Models\Student;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 
-class StudentImport implements ToModel
+class StudentImport implements ToModel, WithHeadingRow
 {
-    /**
-     * @param array $row
-     *
-     * @return \Illuminate\Database\Eloquent\Model|null
-     */
     public function model(array $row)
     {
-        if ($row[0] === "nama") {
+        return new Student([
+            "name" => $row["nama"],
+            "gender" => $row["gender"],
+            "birth_date" => $this->parseDate($row["birth_date"]),
+            "biological_mother" => $row["biological_mother"],
+            "nik" => strval($row["nik"]),
+            "nisn" => strval($row["nisn"]),
+            "grade" => $row["grade"],
+            "status_id" => $this->parseStatus($row["status"]),
+        ]);
+    }
+
+    private function parseDate($value)
+    {
+        if (!$value) {
             return null;
         }
 
-        $statusName = ucfirst(strtolower(trim($row[7])));
-
-        $status = Status::where("name", $statusName)->first();
-        if (!$status) {
-            $status = Status::where("name", "Aktif")->first();
+        if (is_numeric($value)) {
+            return ExcelDate::excelToDateTimeObject($value)->format("Y-m-d");
         }
 
-        return new Student([
-            "nama" => $row[0],
-            "gender" => $row[1],
-            "birth_date" => $row[2],
-            "biological_mother" => $row[3],
-            "nik" => $row[4],
-            "nisn" => $row[5],
-            "grade" => $row[6],
-            "status_id" => $status->id,
-        ]);
+        try {
+            return Carbon::createFromFormat("n/j/Y", $value)->format("Y-m-d");
+        } catch (\Exception $e) {
+        }
+
+        try {
+            return Carbon::createFromFormat("n/j/y", $value)->format("Y-m-d");
+        } catch (\Exception $e) {
+        }
+
+        return Carbon::parse($value)->format("Y-m-d");
+    }
+
+    private function parseStatus($value)
+    {
+        return match (strtolower($value)) {
+            "aktif" => 1,
+            "keluar" => 2,
+            "terdaftar" => 3,
+            "lulus" => 4,
+            default => 3,
+        };
     }
 }

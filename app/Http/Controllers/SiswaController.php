@@ -88,6 +88,16 @@ class SiswaController extends Controller
 
         Excel::import(new StudentImport(), $request->file);
 
-        return back()->with("success", "Berhasil mengimpor data!");
+        return back()->with("success", "berhasil mengimpor data!");
+    }
+
+    public function destroy($id)
+    {
+        $student = Student::find($id);
+        if ($student) {
+            $student->delete();
+        }
+
+        return back()->with("success", "berhasil hapus data!");
     }
 }
